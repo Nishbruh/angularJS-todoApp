@@ -62,10 +62,14 @@
         angular.module('todoApp', [])
             .controller('TodoListController', function () {
                 var todoList = this;
-                todoList.BindSelectedData = function (todo) {
-                    todoList.id = todo.id;
-                    todoList.title = todo.title;
-                    todoList.category = todo.category;
+                todoList.BindSelectedData = function ({
+                    id,
+                    title,
+                    category
+                }) {
+                    todoList.id = id;
+                    todoList.title = title;
+                    todoList.category = category;
                 }
                 todoList.todos = [{
                         id: 1,
