@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Todo App with angular</title>
+</head>
+
+<body ng-app="todoApp">
+    <div class="container" ng-controller="TodoListController as todoList">
+        <h2 class="text-center">Todo App</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form ng-submit="todoList.addTodo()">
+                    <input type="hidden" data-ng-model="todoList.id">
+                    <input type="text" class="form-control" required data-ng-model="todoList.title"
+                        placeholder="Title"><br>
+                    <input type="text" class="form-control" required data-ng-model="todoList.category"
+                        placeholder="Category"><br>
+                    <button
+                        class="btn btn-block {{todoList.id ? 'btn-success':'btn-primary'}}">{{todoList.id ? 'Update Todo':'Add Todo'}}</button>
+                </form>
+            </div>
+        </div>
+        <h2 class="text-center mt-4">Todo List</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-6 table-responsive">
+                <table class="table table-sm table-hover table-bordered">
+                    <thead>
+                        <tr class="bg-dark text-white">
+                            <th>#</th>
+                            <th width=300>Title</th>
+                            <th>Category</th>
+                            <th width=50></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="data in todoList.todos">
+                            <td>{{$index +1}}</td>
+                            <td>{{data.title}}</td>
+                            <td>{{data.category}}</td>
+                            <td>
+                                <span><i class="fa fa-edit" ng-click="todoList.editTodo(data)"></i></span>
+                                <span><i class="fa fa-trash" ng-click="todoList.removeTodo(data.id)"></i></span>
+                            </td>
+                        </tr>
+                        <tr ng-show="!todoList.todos.length" class="bg-danger text-white">
+                            <td colspan="4" class="text-center">No todos</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        angular.module('todoApp', [])
+            .controller('TodoListController', function () {
+                var todoList = this;
+                todoList.BindSelectedData = function (todo) {
+                    todoList.id = todo.id;
+                    todoList.title = todo.title;
+                    todoList.category = todo.category;
+                }
+                todoList.todos = [{
+                        id: 1,
+                        title: 'learn AngularJS',
+                        category: "tasdfsadrue"
+                    },
+                    {
+                        id: 2,
+                        title: 'build an AngularJS app',
+                        category: "falasdfasdfse"
+                    }
+                ];
+
+                todoList.addTodo = function () {
+                    if (!todoList.id) {
+
+                        todoList.todos = [...todoList.todos, {
+                            id: new Date().toISOString(),
+                            title: todoList.title,
+                            category: todoList.category
+                        }]
+                    } else {
+                        const index = todoList.todos.findIndex(x => x.id === todoList.id);
+                        todoList.todos[index] = {
+                            id: todoList.id,
+                            title: todoList.title,
+                            category: todoList.category
+                        }
+                    }
+                    todoList.id = ''
+                    todoList.title = ''
+                    todoList.category = ''
+                }
+                todoList.removeTodo = function (id) {
+                    todoList.todos = todoList.todos.filter(x => x.id !== id)
+                }
+                todoList.editTodo = function (todo) {
+                    this.BindSelectedData(todo)
+                }
+
+            });
+    </script>
+</body>
+
+</html>
